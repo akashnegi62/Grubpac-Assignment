@@ -6,18 +6,36 @@ import { useAuthStore } from '../../stores/authStore';
 import { useToast } from '../../components/ui/Toast';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import { cn } from '../../lib/utils';
+
+const calculateStrength = (pass: string) => {
+  if (pass.length === 0) return -1;
+  let score = 0;
+  if (pass.length >= 6) score += 1;
+  if (pass.length >= 10) score += 1;
+  if (/[A-Z]/.test(pass)) score += 1;
+  if (/[0-9]/.test(pass)) score += 1;
+  if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+  return Math.min(score, 4);
+};
+
+const strengthLabels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-400', 'bg-green-600'];
 
 export function Login() {
   const [username, setUsername] = useState('emilys'); // Pre-fill with a valid dummyjson user
   const [password, setPassword] = useState('emilyspass');
+  const [rememberMe, setRememberMe] = useState(true);
   const navigate = useNavigate();
   const { login: setAuthSession } = useAuthStore();
   const { toast } = useToast();
 
+  const strengthScore = calculateStrength(password);
+
   const loginMutation = useMutation({
     mutationFn: () => authService.login(username, password),
     onSuccess: (data) => {
-      setAuthSession(data.accessToken, data.refreshToken, data.user);
+      setAuthSession(data.accessToken, data.refreshToken, data.user, rememberMe);
       toast({
         title: 'Welcome back!',
         description: `Successfully logged in as ${data.user.firstName}`,
@@ -82,7 +100,42 @@ export function Login() {
                 required
                 disabled={loginMutation.isPending}
               />
+              
+              {/* Password Strength Indicator */}
+              {strengthScore >= 0 && (
+                <div className="mt-2 space-y-1">
+                  <div className="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <span>Password Strength:</span>
+                    <span>{strengthLabels[strengthScore]}</span>
+                  </div>
+                  <div className="flex h-1.5 gap-1 overflow-hidden rounded-full">
+                    {[...Array(5)].map((_, i) => (
+                      <div
+                        key={i}
+                        className={cn(
+                          "h-full w-full rounded-full transition-all duration-300",
+                          i <= strengthScore ? strengthColors[strengthScore] : "bg-gray-200 dark:bg-gray-700"
+                        )}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="remember-me"
+              name="remember-me"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700"
+            />
+            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+              Remember me
+            </label>
           </div>
 
           <Button

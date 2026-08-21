@@ -35,7 +35,7 @@ export const authService = {
 
   refreshToken: async () => {
     // Get the current refresh token from localStorage
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = sessionStorage.getItem('refreshToken') || localStorage.getItem('refreshToken');
     if (!refreshToken) {
       throw new Error('No refresh token available');
     }

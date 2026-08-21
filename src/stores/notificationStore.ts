@@ -12,9 +12,12 @@ export interface Notification {
 interface NotificationState {
   notifications: Notification[];
   unreadCount: number;
+  isPanelOpen: boolean;
   addNotifications: (notifications: Notification[]) => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
+  setPanelOpen: (isOpen: boolean) => void;
+  loadInitialNotifications: (initial: Notification[]) => void;
 }
 
 export const useNotificationStore = create<NotificationState>()(
@@ -22,6 +25,7 @@ export const useNotificationStore = create<NotificationState>()(
     (set) => ({
       notifications: [],
       unreadCount: 0,
+      isPanelOpen: false,
       addNotifications: (newNotifications) => set((state) => {
         // Simple deduplication based on ID
         const existingIds = new Set(state.notifications.map(n => n.id));
@@ -48,10 +52,20 @@ export const useNotificationStore = create<NotificationState>()(
           notifications: updated,
           unreadCount: 0
         };
+      }),
+      setPanelOpen: (isOpen) => set({ isPanelOpen: isOpen }),
+      loadInitialNotifications: (initial) => set((state) => {
+        if (state.notifications.length > 0) return state; // Only load if empty
+        return {
+          notifications: initial,
+          unreadCount: initial.filter(n => !n.read).length
+        };
       })
     }),
     {
       name: 'notification-storage',
+      version: 2,
+      partialize: (state) => ({ notifications: state.notifications, unreadCount: state.unreadCount }),
     }
   )
 );

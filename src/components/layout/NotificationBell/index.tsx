@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Bell } from 'lucide-react';
 import { useNotificationStore } from '../../../stores/notificationStore';
 import { cn } from '../../../lib/utils';
@@ -6,19 +6,33 @@ import { Button } from '../../ui/Button';
 
 export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(20);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotificationStore();
+  const { notifications, unreadCount, markAsRead, markAllAsRead, setPanelOpen } = useNotificationStore();
+
+  const handleToggle = () => {
+    const nextState = !isOpen;
+    setIsOpen(nextState);
+    setPanelOpen(nextState);
+    if (!nextState) setVisibleCount(20);
+  };
+
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+    setPanelOpen(false);
+    setVisibleCount(20);
+  }, [setPanelOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        handleClose();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [handleClose]);
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -26,7 +40,7 @@ export function NotificationBell() {
         variant="ghost" 
         size="icon" 
         className="relative"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
         aria-label="Notifications"
       >
         <Bell className="h-5 w-5 text-gray-600 dark:text-gray-300" />
@@ -51,25 +65,37 @@ export function NotificationBell() {
             )}
           </div>
           
-          <div className="max-h-80 overflow-y-auto flex flex-col gap-2">
+          <div className="max-h-80 overflow-y-auto flex flex-col gap-2 pb-2">
             {notifications.length === 0 ? (
               <p className="text-sm text-gray-500 text-center py-4">No notifications yet</p>
             ) : (
-              notifications.slice(0, 20).map((n) => (
-                <div 
-                  key={n.id} 
-                  className={cn(
-                    "p-3 rounded-md border text-sm transition-colors cursor-pointer",
-                    n.read 
-                      ? "border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50" 
-                      : "border-blue-100 bg-blue-50 dark:border-blue-900/30 dark:bg-blue-900/10"
-                  )}
-                  onClick={() => markAsRead(n.id)}
-                >
-                  <p className="font-medium text-gray-900 dark:text-gray-100">{n.title}</p>
-                  <p className="text-gray-600 dark:text-gray-400 text-xs mt-1 line-clamp-2">{n.body}</p>
-                </div>
-              ))
+              <>
+                {notifications.slice(0, visibleCount).map((n) => (
+                  <div 
+                    key={n.id} 
+                    className={cn(
+                      "p-3 rounded-md border text-sm transition-colors cursor-pointer",
+                      n.read 
+                        ? "border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50" 
+                        : "border-blue-100 bg-blue-50 dark:border-blue-900/30 dark:bg-blue-900/10"
+                    )}
+                    onClick={() => markAsRead(n.id)}
+                  >
+                    <p className="font-medium text-gray-900 dark:text-gray-100">{n.title}</p>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs mt-1 line-clamp-2">{n.body}</p>
+                  </div>
+                ))}
+                {notifications.length > visibleCount && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full text-xs mt-2" 
+                    onClick={() => setVisibleCount(v => v + 20)}
+                  >
+                    Load More
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>

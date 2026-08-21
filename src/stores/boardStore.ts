@@ -23,60 +23,77 @@ export interface Task {
   comments?: Comment[];
 }
 
+interface BoardFilters {
+  priority: string | null;
+  assignee: string | null;
+}
+
 interface BoardState {
   tasks: Task[];
+  previousTasks: Task[] | null;
+  filters: BoardFilters;
   hasLoadedInitial: boolean;
   setTasks: (tasks: Task[]) => void;
+  setFilters: (filters: Partial<BoardFilters>) => void;
   addTask: (task: Task) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   deleteTask: (id: string) => void;
   moveTask: (id: string, newStatus: TaskStatus, newIndex?: number) => void;
   reorderTask: (id: string, newIndex: number) => void;
+  undoLastAction: () => void;
 }
 
 export const useBoardStore = create<BoardState>()(
   persist(
     (set) => ({
       tasks: [],
+      previousTasks: null,
+      filters: { priority: null, assignee: null },
       hasLoadedInitial: false,
-      setTasks: (tasks) => set({ tasks, hasLoadedInitial: true }),
-      addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
-      updateTask: (id, updates) => set((state) => ({
-        tasks: state.tasks.map((t) => t.id === id ? { ...t, ...updates } : t)
+      
+      setTasks: (tasks) => set({ tasks, hasLoadedInitial: true, previousTasks: null }),
+      
+      setFilters: (newFilters) => set((state) => ({
+        filters: { ...state.filters, ...newFilters }
       })),
-      deleteTask: (id) => set((state) => ({
-        tasks: state.tasks.filter((t) => t.id !== id)
-      })),
-      moveTask: (id, newStatus, newIndex) => set((state) => {
-        const taskIndex = state.tasks.findIndex(t => t.id === id);
-        if (taskIndex === -1) return state;
 
-        const updatedTasks = [...state.tasks];
-        const task = { ...updatedTasks[taskIndex], status: newStatus };
+      addTask: (task) => set((state) => ({ 
+        previousTasks: state.tasks,
+        tasks: [...state.tasks, task] 
+      })),
+      
+      updateTask: (id, updates) => set((state) => ({
+        previousTasks: state.tasks,
+        tasks: state.tasks.map(task => 
+          task.id === id ? { ...task, ...updates } : task
+        )
+      })),
+      
+      deleteTask: (id) => set((state) => ({
+        previousTasks: state.tasks,
+        tasks: state.tasks.filter(task => task.id !== id)
+      })),
+      
+      moveTask: (id, newStatus, newIndex) => set((state) => {
+        const taskToMove = state.tasks.find(t => t.id === id);
+        if (!taskToMove) return state;
+
+        const updatedTask = { ...taskToMove, status: newStatus };
+        let newTasks = state.tasks.filter(t => t.id !== id);
         
-        // Remove from old position
-        updatedTasks.splice(taskIndex, 1);
-        
-        if (newIndex !== undefined) {
-          // Insert at specific index among tasks of the new status
-          // Find the absolute insertion index in the full array
-          const statusTasks = updatedTasks.filter(t => t.status === newStatus);
+        if (typeof newIndex === 'number') {
+          const statusTasks = newTasks.filter(t => t.status === newStatus);
+          const otherTasks = newTasks.filter(t => t.status !== newStatus);
           
-          if (newIndex >= statusTasks.length) {
-            // Append at the end
-            updatedTasks.push(task);
-          } else {
-            const targetTask = statusTasks[newIndex];
-            const absoluteTargetIndex = updatedTasks.findIndex(t => t.id === targetTask.id);
-            updatedTasks.splice(absoluteTargetIndex, 0, task);
-          }
+          statusTasks.splice(newIndex, 0, updatedTask);
+          newTasks = [...otherTasks, ...statusTasks];
         } else {
-          // Default to end
-          updatedTasks.push(task);
+          newTasks.push(updatedTask);
         }
 
-        return { tasks: updatedTasks };
+        return { previousTasks: state.tasks, tasks: newTasks };
       }),
+      
       reorderTask: (id, newIndex) => set((state) => {
         const taskIndex = state.tasks.findIndex(t => t.id === id);
         if (taskIndex === -1) return state;
@@ -98,11 +115,17 @@ export const useBoardStore = create<BoardState>()(
           return t;
         });
 
-        return { tasks: newFullTasks };
+        return { previousTasks: state.tasks, tasks: newFullTasks };
       }),
+      
+      undoLastAction: () => set((state) => {
+        if (!state.previousTasks) return state;
+        return { tasks: state.previousTasks, previousTasks: null };
+      })
     }),
     {
       name: 'board-storage',
+      version: 1,
     }
   )
 );

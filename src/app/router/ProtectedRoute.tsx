@@ -16,8 +16,8 @@ export function ProtectedRoute() {
         return;
       }
 
-      const refreshToken = localStorage.getItem('refreshToken');
-      const userDataStr = localStorage.getItem('userData');
+      const refreshToken = sessionStorage.getItem('refreshToken') || localStorage.getItem('refreshToken');
+      const userDataStr = sessionStorage.getItem('userData') || localStorage.getItem('userData');
       
       if (!refreshToken || !userDataStr) {
         setLoadingSession(false);
