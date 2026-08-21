@@ -87,3 +87,4 @@ SprintDesk is a Single Page Application (SPA). To deploy it to a static host lik
 2. Set the **Build Command** to `npm run build`.
 3. Set the **Output Directory** to `dist`.
 4. *Important*: Ensure you configure Rewrite Rules so that all routes point to `index.html` (Vercel and Netlify usually auto-detect Vite projects and handle this for you).
+
