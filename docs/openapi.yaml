@@ -1,0 +1,194 @@
+openapi: 3.0.3
+info:
+  title: SprintDesk API Documentation
+  version: 1.0.0
+  description: |
+    API and Data-Access Layer Documentation for SprintDesk.
+    This document outlines the simulated endpoints, authentication behavior, and mocked data sources used in the application.
+
+servers:
+  - url: http://localhost:5173
+    description: Local development server
+
+paths:
+  /auth/login:
+    post:
+      servers:
+        - url: https://dummyjson.com
+          description: DummyJSON Auth Service
+      summary: User Login
+      description: Authenticates a user and returns access and refresh tokens.
+      security: [] # No auth required for login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                expiresInMins:
+                  type: integer
+                  description: Optional expiration for testing refresh token flow.
+                  default: 30
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  image:
+                    type: string
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/refresh:
+    post:
+      servers:
+        - url: https://dummyjson.com
+          description: DummyJSON Auth Service
+      summary: Refresh Token
+      description: |
+        Refreshes the access token using the stored refresh token.
+        
+        **Refresh Behavior:**
+        Our custom API Client (`apiClient.ts`) intercepts any `401 Unauthorized` responses. When a 401 occurs, the client pauses all pending requests and calls this endpoint. If successful, it updates the local storage/store with the new tokens and replays the queued requests.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                expiresInMins:
+                  type: integer
+                  default: 30
+      responses:
+        '200':
+          description: Token successfully refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+        '401':
+          description: Refresh token invalid or expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /mock-data.json:
+    get:
+      summary: Fetch Initial Tasks
+      description: Fetches the initial seeded Kanban tasks, users, and comments from static JSON.
+      security: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                  tasks:
+                    type: array
+                    items:
+                      type: object
+                  comments:
+                    type: array
+                    items:
+                      type: object
+        '404':
+          description: Mock data file not found
+
+  /posts:
+    get:
+      servers:
+        - url: https://jsonplaceholder.typicode.com
+          description: JSONPlaceholder mock API
+      summary: Polling Notifications
+      description: Fetches simulated live notifications (posts).
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: _start
+          schema:
+            type: integer
+          description: Offset for pagination
+        - in: query
+          name: _limit
+          schema:
+            type: integer
+          description: Number of records to return
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    body:
+                      type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        The custom API Client (`apiClient.ts`) automatically injects the `Authorization: Bearer <token>` header on all requests if an access token is present in the `authStore`.
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string

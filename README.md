@@ -68,6 +68,8 @@ Since this is a simulated environment, use the following credentials to access t
 
 For a deep dive into how the global state, styling mechanisms, and data flow operate under the hood, please read the [Architecture Guide](docs/ARCHITECTURE.md).
 
+For information on the simulated endpoints, payloads, and authentication refresh behavior, refer to the [API Documentation](docs/openapi.yaml).
+
 ---
 
 ## 🏗️ Building for Production
