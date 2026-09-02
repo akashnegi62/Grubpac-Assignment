@@ -36,7 +36,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
       >
         <div className="flex h-16 items-center justify-between px-4 md:hidden border-b border-gray-200 dark:border-gray-800">
-          <span className="text-xl font-bold text-blue-600 dark:text-blue-400">SprintDesk</span>
+          <span className="text-xl font-bold text-blue-800 dark:text-blue-600">SprintDesk</span>
           <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close sidebar">
             <X className="h-5 w-5" />
           </Button>
