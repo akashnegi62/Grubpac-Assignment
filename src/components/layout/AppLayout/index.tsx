@@ -20,7 +20,7 @@ export function AppLayout() {
 
   return (
     <ToastProvider>
-      <div className="flex h-screen w-full bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 overflow-hidden font-sans">
+      <div className="flex h-screen w-full bg-gray-100 text-gray-900 dark:bg-gray-950 dark:text-gray-100 overflow-hidden font-sans">
         <Sidebar 
           isOpen={isSidebarOpen} 
           onClose={() => setIsSidebarOpen(false)} 
@@ -29,7 +29,7 @@ export function AppLayout() {
         <div className="flex flex-1 flex-col overflow-hidden w-full relative">
           <Header onMenuClick={() => setIsSidebarOpen(true)} />
           
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+          <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-10">
             <div className="mx-auto max-w-7xl h-full">
               <Outlet />
             </div>
