@@ -38,13 +38,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="flex h-16 items-center justify-between px-4 md:hidden border-b border-gray-200 dark:border-gray-800">
           <span className="text-xl font-bold text-blue-800 dark:text-blue-600">SprintDesk</span>
           <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close sidebar">
-            <X className="h-5 w-5" />
+            <X className="h-6 w-6" />
           </Button>
         </div>
 
         <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
           <div className="mb-4 hidden md:block">
-            <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <span className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
               Menu
             </span>
           </div>
@@ -59,7 +59,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               className={({ isActive }) => cn(
                 "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 isActive 
-                  ? "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300" 
+                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300" 
                   : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800/50"
               )}
             >
