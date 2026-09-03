@@ -47,11 +47,11 @@ export function Header({ onMenuClick }: HeaderProps) {
         </Button>
 
         {user && (
-          <div className="flex items-center gap-2 pl-2 border-l border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-4 pl-2 border-l border-gray-200 dark:border-gray-700">
             <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold dark:bg-blue-900 dark:text-blue-200">
               {user.username?.charAt(0).toUpperCase() || 'U'}
             </div>
-            <span className="text-sm font-medium hidden sm:block dark:text-gray-200">
+            <span className="text-lg font-medium hidden sm:block dark:text-gray-200">
               {user.username}
             </span>
           </div>
