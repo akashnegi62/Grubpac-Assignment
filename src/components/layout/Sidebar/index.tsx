@@ -43,7 +43,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
 
         <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
-          <div className="mb-4 hidden md:block">
+          <div className="mb-5 hidden md:block">
             <span className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
               Menu
             </span>
@@ -59,7 +59,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               className={({ isActive }) => cn(
                 "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 isActive 
-                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300" 
+                  ? "bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300" 
                   : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800/50"
               )}
             >
@@ -69,7 +69,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           ))}
         </nav>
 
-        <div className="border-t border-gray-200 p-4 dark:border-gray-800">
+        <div className="border-t border-gray-500 p-4 dark:border-gray-800">
           <Button 
             variant="ghost" 
             className="w-full justify-start gap-3 text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-900/20"

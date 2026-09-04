@@ -52,13 +52,13 @@ export function NotificationBell() {
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 rounded-md border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-800 dark:bg-gray-900 z-50">
+        <div className="absolute right-0 mt-4 w-80 rounded-md border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-800 dark:bg-gray-900 z-50">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100">Notifications</h3>
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100">Notifications</h3>
             {unreadCount > 0 && (
               <button 
                 onClick={markAllAsRead}
-                className="text-xs text-blue-600 hover:underline dark:text-blue-400"
+                className="text-xs text-blue-500 hover:underline dark:text-blue-400"
               >
                 Mark all read
               </button>
@@ -67,7 +67,7 @@ export function NotificationBell() {
           
           <div className="max-h-80 overflow-y-auto flex flex-col gap-2 pb-2">
             {notifications.length === 0 ? (
-              <p className="text-sm text-gray-500 text-center py-4">No notifications yet</p>
+              <p className="text-sm text-gray-400 text-center py-4">No notifications yet</p>
             ) : (
               <>
                 {notifications.slice(0, visibleCount).map((n) => (
