@@ -65,7 +65,7 @@ export function NotificationBell() {
             )}
           </div>
           
-          <div className="max-h-80 overflow-y-auto flex flex-col gap-2 pb-2">
+          <div className="max-h-80 overflow-y-auto flex flex-col gap-4 pb-4">
             {notifications.length === 0 ? (
               <p className="text-sm text-gray-400 text-center py-4">No notifications yet</p>
             ) : (
