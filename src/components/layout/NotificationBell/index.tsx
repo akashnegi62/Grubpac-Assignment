@@ -74,7 +74,7 @@ export function NotificationBell() {
                   <div 
                     key={n.id} 
                     className={cn(
-                      "p-3 rounded-md border text-sm transition-colors cursor-pointer",
+                      "p-3 rounded-md border text-lg transition-colors cursor-pointer",
                       n.read 
                         ? "border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50" 
                         : "border-blue-200 bg-blue-50 dark:border-blue-900/30 dark:bg-blue-900/10"
