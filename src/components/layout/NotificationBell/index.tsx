@@ -82,7 +82,7 @@ export function NotificationBell() {
                     onClick={() => markAsRead(n.id)}
                   >
                     <p className="font-medium text-gray-900 dark:text-gray-100">{n.title}</p>
-                    <p className="text-gray-600 dark:text-gray-400 text-xs mt-1 line-clamp-2">{n.body}</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-xs mt-2 line-clamp-2">{n.body}</p>
                   </div>
                 ))}
                 {notifications.length > visibleCount && (
