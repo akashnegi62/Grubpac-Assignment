@@ -17,7 +17,7 @@ export function DataTable<T>({ data, columns, className }: DataTableProps<T>) {
   return (
     <div className={cn("w-full overflow-auto border rounded-md border-gray-200 dark:border-gray-800", className)}>
       <table className="w-full caption-bottom text-sm">
-        <thead className="border-b bg-gray-50 dark:bg-gray-800/50 dark:border-gray-800">
+        <thead className="border-b bg-gray-80 dark:bg-gray-800/50 dark:border-gray-800">
           <tr>
             {columns.map((col) => (
               <th
