@@ -20,7 +20,7 @@ export function AppLayout() {
 
   return (
     <ToastProvider>
-      <div className="flex h-screen w-full bg-gray-300 text-gray-900 dark:bg-gray-950 dark:text-gray-100 overflow-hidden font-sans">
+      <div className="flex h-screen w-full bg-gray-300 text-gray-800 dark:bg-gray-950 dark:text-gray-100 overflow-hidden font-sans">
         <Sidebar 
           isOpen={isSidebarOpen} 
           onClose={() => setIsSidebarOpen(false)} 
