@@ -40,7 +40,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         
         <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
           {theme === 'dark' ? (
-            <Sun className="h-5 w-5 text-gray-200" />
+            <Sun className="h-5 w-5 text-gray-300" />
           ) : (
             <Moon className="h-5 w-5 text-gray-400" />
           )}
