@@ -19,7 +19,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   useNotificationPolling();
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <header className="sticky top-0 z-41 flex h-16 w-full items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div className="flex items-center gap-4">
         <Button 
           variant="ghost" 
